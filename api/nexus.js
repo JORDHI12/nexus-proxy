@@ -1,35 +1,29 @@
 export default async function handler(req, res) {
   // CORS
   res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', '*');
 
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
   }
 
-  if (req.method !== 'POST') {
-    return res.status(200).json({ message: "✅ Nexus Proxy Ready" });
-  }
-
   try {
-    const body = req.body;
-
-    const response = await fetch('https://api.nexusggr.com', {
+    const nexusResponse = await fetch('https://api.nexusggr.com', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body)
+      body: JSON.stringify(req.body)
     });
 
-    const data = await response.json();
+    const data = await nexusResponse.json();
+    return res.status(200).json(data);
 
-    return res.status(response.status).json(data);
-
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error("Proxy Error:", error);
     return res.status(500).json({ 
       status: 0, 
-      msg: "Proxy Error" 
+      msg: "SERVER_OFFLINE",
+      detail: error.message 
     });
   }
 }
