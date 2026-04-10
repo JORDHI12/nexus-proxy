@@ -1,0 +1,19 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "api/nexus.js",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/nexus",
+      "dest": "/api/nexus.js"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/api/nexus.js"
+    }
+  ]
+}
